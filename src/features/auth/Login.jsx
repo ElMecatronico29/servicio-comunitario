@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";  
+import { useDispatch } from "react-redux";
 import { login } from "../../redux/authSlice";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,13 +14,31 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
+    let userRole = null;
+    let redirectPath = "/dashboard"; 
+
     if (form.username === "admin" && form.password === "admin") {
-      dispatch(login({ user: form.username, token: "123456789" }));  
-      navigate("/dashboard");
+      userRole = "admin";
+      redirectPath = "/admin";
+    } else if (form.username === "jefe" && form.password === "jefe") {
+      userRole = "jefeCarrera";
+      redirectPath = "/jefe-carrera";
+    } else if (form.username === "tutor" && form.password === "tutor") {
+      userRole = "tutor";
+      redirectPath = "/tutor";
+    } else if (form.username === "estudiante" && form.password === "estudiante") {
+      userRole = "student";
+      redirectPath = "/student";
     } else {
       alert("Credenciales incorrectas");
+      return;
     }
+
+    dispatch(login({ user: form.username, token: "123456789", role: userRole }));
+    console.log("Usuario:", form.username, "Rol:", userRole);
+    
+    navigate(redirectPath); 
   };
 
   return (
