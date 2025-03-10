@@ -1,21 +1,20 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = ({ allowedRoles }) => {
   const user = useSelector((state) => state.auth.user);
-  const role = useSelector((state) => state.auth.role);
-
-  // 🔥 Si aún no hemos cargado los datos desde localStorage, mostramos "Cargando..."
-  if (user === undefined || role === undefined) {
-    return <h2 className="text-center mt-10">Cargando...</h2>;
-  }
+  const needsPasswordSetup = useSelector((state) => state.auth.needsPasswordSetup);
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" />;
   }
 
-  if (!allowedRoles.includes(role)) {
-    return <Navigate to="/login" replace />;
+  if (needsPasswordSetup) {
+    return <Navigate to="/register-password" />; // 🔥 Si necesita contraseña, redirigir a la vista de registro
+  }
+
+  if (!allowedRoles.includes(user.role)) {
+    return <Navigate to={`/${user.role}`} />;
   }
 
   return <Outlet />;

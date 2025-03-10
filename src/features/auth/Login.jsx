@@ -1,74 +1,110 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/authSlice";
+import apiClient from "../../api/apiClient";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [identification, setIdentification] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [verifiedUser, setVerifiedUser] = useState(null);
+  const [error, setError] = useState(null);
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  useEffect(() => {
+    if (user) {
+      navigate(`/${user.role}`);
+    }
+  }, [user, navigate]);
+
+  // 🔹 Verificar cédula para cambiar la contraseña
+  const handleVerifyIdentification = async () => {
+    try {
+      const response = await apiClient.post("/users/verifyIdentification", { identification });
+
+      const userData = response.data.response;
+
+      // 🔥 Guardamos los datos del usuario para cambiar la contraseña
+      setVerifiedUser(userData);
+      setIsChangingPassword(true);
+    } catch (error) {
+      setError("Cédula no encontrada. Verifica e intenta de nuevo.");
+    }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    let userRole = null;
-    let redirectPath = "/dashboard"; 
-
-    if (form.username === "admin" && form.password === "admin") {
-      userRole = "admin";
-      redirectPath = "/admin";
-    } else if (form.username === "jefe" && form.password === "jefe") {
-      userRole = "jefeCarrera";
-      redirectPath = "/jefe-carrera";
-    } else if (form.username === "tutor" && form.password === "tutor") {
-      userRole = "tutor";
-      redirectPath = "/tutor";
-    } else if (form.username === "estudiante" && form.password === "estudiante") {
-      userRole = "student";
-      redirectPath = "/student";
-    } else {
-      alert("Credenciales incorrectas");
-      return;
+  // 🔥 **Nuevo useEffect para manejar la redirección a `ChangePassword`**
+  useEffect(() => {
+    if (isChangingPassword && verifiedUser) {
+      navigate("/change-password", { state: { user: verifiedUser } });
     }
+  }, [isChangingPassword, verifiedUser, navigate]);
 
-    dispatch(login({ user: form.username, token: "123456789", role: userRole }));
-    console.log("Usuario:", form.username, "Rol:", userRole);
-    
-    navigate(redirectPath); 
+  // 🔹 Manejar Login normal
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const response = await apiClient.post("/users/auth", {
+        email: form.email,
+        password: form.password
+      });
+
+      if (response.data.response.token) {
+        dispatch(login({ user: response.data.response.user, token: response.data.response.token }));
+        localStorage.setItem("token", response.data.response.token);
+        localStorage.setItem("user", JSON.stringify(response.data.response.user));
+        navigate(`/${response.data.response.user.role}`);
+      } else {
+        setError("Credenciales incorrectas");
+      }
+    } catch (error) {
+      setError("Error en la autenticación");
+    }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-2xl font-bold mb-4">Iniciar Sesión</h2>
-      <form className="bg-white p-6 shadow-md rounded-md" onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700">Usuario</label>
+      <h2 className="text-3xl font-bold">{isChangingPassword ? "Cambiar Contraseña" : "Iniciar Sesión"}</h2>
+      
+      {!isChangingPassword ? (
+        <div className="bg-white p-6 shadow-md rounded-md w-96 mt-4">
           <input
             type="text"
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            className="w-full px-3 py-2 border rounded-md mb-4"
           />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Contraseña</label>
           <input
             type="password"
-            name="password"
+            placeholder="Contraseña"
             value={form.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-md"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="w-full px-3 py-2 border rounded-md mb-4"
           />
+          <button onClick={handleLogin} className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+            Iniciar Sesión
+          </button>
+          <p className="mt-4 text-sm">¿Olvidaste tu contraseña o aún no la has creado?</p>
+          <input
+            type="text"
+            placeholder="Cédula"
+            value={identification}
+            onChange={(e) => setIdentification(e.target.value)}
+            className="w-full px-3 py-2 border rounded-md mb-4"
+          />
+          <button onClick={handleVerifyIdentification} className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600">
+            Verificar Cédula
+          </button>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
-          Iniciar Sesión
-        </button>
-      </form>
+      ) : (
+        <p>Redirigiendo...</p>
+      )}
     </div>
   );
 };

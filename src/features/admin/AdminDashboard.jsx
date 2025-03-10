@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
+import { logout } from "../../redux/authSlice";
 import { approveProject, rejectProject } from "../../redux/adminSlice";
 
 const AdminDashboard = () => {
@@ -13,10 +14,20 @@ const AdminDashboard = () => {
   const handleReject = (index) => {
     dispatch(rejectProject(projects[index]));
   };
+  const handleLogout = () => {
+    dispatch(logout()); // 🔥 Eliminamos la sesión
+    navigate("/login"); // 🔄 Redirigir a login
+  };
   const approvedProjects = useSelector((state) => state.admin.approvedProjects);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-red-100">
+      <button
+        onClick={handleLogout}
+        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+      >
+        🔴 Cerrar Sesión
+      </button>
       <h1 className="text-3xl font-bold">🔧 Panel de Administrador</h1>
       <p>Aquí puedes gestionar los proyectos subidos por los estudiantes.</p>
 

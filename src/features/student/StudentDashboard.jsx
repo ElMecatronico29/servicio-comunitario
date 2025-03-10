@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProject } from "../../redux/studentSlice";
+import { logout } from "../../redux/authSlice"; // 🔥 Importamos la acción de logout
+import { useNavigate } from "react-router-dom"; // 🔥 Para redirigir al usuario al login
 
 const StudentDashboard = () => {
   const [project, setProject] = useState({ title: "", description: "", file: null });
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // 🔥 Hook para la navegación
   const projects = useSelector((state) => state.student.projects);
 
   const handleChange = (e) => {
@@ -17,15 +20,30 @@ const StudentDashboard = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     dispatch(addProject(project));
     alert("Proyecto enviado correctamente.");
     setProject({ title: "", description: "", file: null });
   };
 
+  const handleLogout = () => {
+    dispatch(logout()); // 🔥 Elimina el usuario de Redux
+    localStorage.removeItem("token"); // 🔥 Borra el token
+    localStorage.removeItem("user"); // 🔥 Borra la info del usuario
+    navigate("/login"); // 🔥 Redirige al login
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-blue-100">
-      <h1 className="text-3xl font-bold">📘 Panel de Estudiante</h1>
+      <div className="w-full flex justify-between p-4">
+        <h1 className="text-3xl font-bold">📘 Panel de Estudiante</h1>
+        <button 
+          onClick={handleLogout} 
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+        >
+          Cerrar Sesión 🚪
+        </button>
+      </div>
+      
       <p>Aquí puedes subir y hacer seguimiento de tu proyecto.</p>
 
       <form className="bg-white p-6 shadow-md rounded-md mt-6" onSubmit={handleSubmit}>
