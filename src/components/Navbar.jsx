@@ -10,7 +10,7 @@ export default function Navbar()
               <LinkNavBar titulo="Noticias" referencia="/"/>
               <LinkNavBar titulo="Contacto" referencia="/"/>
               <li>
-                <a className="rounded-full p-2 px-4 bg-white text-blue-900" href="/login">Login</a>
+                <a className="rounded-full p-2 px-6 bg-white text-blue-900 text-xl" href="/login">Login</a>
               </li>
             </ul>
           </div>
