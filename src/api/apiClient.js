@@ -32,4 +32,16 @@ export const updatePassword = (identification, password) => {
   return apiClient.put(`/users/updatePassword/${identification}`, { password });
 };
 
+// 🔥 Nuevo método para subir archivos .txt
+export const uploadUsersFile = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return apiClient.post("/users/loadFile", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+};
+
 export default apiClient;
