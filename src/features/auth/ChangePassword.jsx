@@ -34,28 +34,29 @@ const RegisterPassword = () => {
   
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-3xl font-bold">Crear Contraseña</h2>
-      <form onSubmit={handleRegister} className="bg-white p-6 shadow-md rounded-md w-96 mt-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[url(/assets/unet.webp)] bg-cover">
+     
+      <form onSubmit={handleRegister} className="bg-secondary p-6 shadow-md rounded-md w-96 mt-4">
+      <h2 className="text-3xl font-bold text-primary text-center my-4">Crear Contraseña</h2>
         {/* 🔹 Mostrar el correo en un campo de solo lectura */}
-        <label className="block text-gray-700">Correo Electrónico</label>
+        <label className="block text-primary">Correo Electrónico</label>
         <input
           type="text"
           value={user.email} // 🔥 Aquí mostramos el correo
           disabled // 🔹 Deshabilitado para que no pueda modificarse
-          className="w-full px-3 py-2 border rounded-md mb-4 bg-gray-200 text-gray-700 cursor-not-allowed"
+          className="w-full px-3 py-2 border rounded-md mb-4 bg-gray-200 text-black cursor-not-allowed"
         />
 
-        <label className="block text-gray-700">Nueva Contraseña</label>
+        <label className="block text-primary">Nueva Contraseña</label>
         <input
           type="password"
           placeholder="Ingrese su nueva contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border rounded-md mb-4"
-        />
+          className="w-full px-3 py-2 mb-4 mr-4 bg-secondary text-black border-primary box-border border-b-2 focus:bg-primaryHover  focus-visible:outline-none "
+          />
 
-        <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+        <button type="submit" className="w-full bg-primary text-white py-2 rounded-md hover:bg-blue-950">
           Guardar Contraseña
         </button>
         {error && <p className="text-red-500 mt-2">{error}</p>}

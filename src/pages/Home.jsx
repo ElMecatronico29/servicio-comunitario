@@ -7,7 +7,7 @@ import News from "../components/News";
 const Home = () => {
   return (
     <>
-      <Header />
+      <Header position="relative" />
       <Navbar/>
       <img src={imagenPlaza} className='h-72 w-full '  />
       <News />

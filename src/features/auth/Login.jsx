@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/authSlice";
 import apiClient from "../../api/apiClient";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/Header";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -67,49 +68,55 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col bg-secondary items-center justify-center min-h-screen">
-      <h2 className="text-3xl font-bold text-primary">{isChangingPassword ? "Cambiar Contraseña" : "Iniciar Sesión"}</h2>
+    <> 
+      <Header position="absolute" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[url(/assets/unet.webp)] bg-cover ">
       
-      {!isChangingPassword ? (
-        <div className="bg-primary p-6 shadow-md rounded-md w-96 mt-4">
-          <label htmlFor="Email"className="text-secondary ml-1">Email</label>
-          <input
-            type="text"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full px-3 py-2 border rounded-md mb-4 bg-secondary"
-          />
-          
-          <label htmlFor="Email"className="text-secondary ml-1">Contraseña</label>
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full px-3 py-2 border rounded-md mb-4 bg-secondary"
-          />
-          <button onClick={handleLogin} className="w-full bg-secondary text-primary py-2 rounded-md hover:bg-primaryHover">
-            Iniciar Sesión
-          </button>
-          <p className="mt-4 text-sm">¿Olvidaste tu contraseña o aún no la has creado?</p>
-          <input
-            type="text"
-            placeholder="Cédula"
-            value={identification}
-            onChange={(e) => setIdentification(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md mb-4"
-          />
-          <button onClick={handleVerifyIdentification} className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600">
-            Verificar Cédula
-          </button>
-          {error && <p className="text-red-500 mt-2">{error}</p>}
-        </div>
-      ) : (
-        <p>Redirigiendo...</p>
-      )}
-    </div>
+        
+        
+        {!isChangingPassword ? (
+          <div className="bg-secondary p-6 shadow-md rounded-md w-96 mt-4 box-border h-max  ">
+            <label htmlFor="Email"className="text-primary ml-1">Email</label>
+            <input
+              type="text"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              className="w-full px-3 py-2 mb-4 mr-4 bg-secondary text-black border-primary box-border border-b-2 focus:bg-primaryHover  focus-visible:outline-none "
+            />
+            
+            <label htmlFor="Email"className="text-primary ml-1">Contraseña</label>
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              className="w-full px-3 py-2 mb-4 bg-secondary text-black border-primary box-border   border-b-2 focus:bg-primaryHover  focus-visible:outline-none"
+            />
+            <button onClick={handleLogin} className="w-full bg-primary text-secondary py-2 rounded-md   hover:bg-blue-950 ">
+              Iniciar Sesión
+            </button>
+            <p className="my-4 text-sm text-primary">¿Olvidaste tu contraseña o aún no la has creado?</p>
+            <label htmlFor="Cedula"className="text-primary ml-1">Cedula</label>
+            <input
+              type="text"
+              placeholder="Cédula"
+              value={identification}
+              onChange={(e) => setIdentification(e.target.value)}
+              className="w-full px-3 py-2 mb-4 bg-secondary text-black border-primary box-border   border-b-2 focus:bg-primaryHover  focus-visible:outline-none"
+            />
+            <button onClick={handleVerifyIdentification} className="w-full bg-secondary text-primary py-2 border border-primary rounded-md hover:bg-primaryHover hover:border-primary">
+              Verificar Cédula
+            </button>
+            {error && <p className="text-red-500 mt-2">{error}</p>}
+          </div>
+        ) : (
+          <p>Redirigiendo...</p>
+        )}
+      </div>
+    </>
   );
+  
 };
 
 export default Login;
