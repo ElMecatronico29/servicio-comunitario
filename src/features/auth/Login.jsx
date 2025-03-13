@@ -67,26 +67,29 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-3xl font-bold">{isChangingPassword ? "Cambiar Contraseña" : "Iniciar Sesión"}</h2>
+    <div className="flex flex-col bg-secondary items-center justify-center min-h-screen">
+      <h2 className="text-3xl font-bold text-primary">{isChangingPassword ? "Cambiar Contraseña" : "Iniciar Sesión"}</h2>
       
       {!isChangingPassword ? (
-        <div className="bg-white p-6 shadow-md rounded-md w-96 mt-4">
+        <div className="bg-primary p-6 shadow-md rounded-md w-96 mt-4">
+          <label htmlFor="Email"className="text-secondary ml-1">Email</label>
           <input
             type="text"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full px-3 py-2 border rounded-md mb-4"
+            className="w-full px-3 py-2 border rounded-md mb-4 bg-secondary"
           />
+          
+          <label htmlFor="Email"className="text-secondary ml-1">Contraseña</label>
           <input
             type="password"
             placeholder="Contraseña"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full px-3 py-2 border rounded-md mb-4"
+            className="w-full px-3 py-2 border rounded-md mb-4 bg-secondary"
           />
-          <button onClick={handleLogin} className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">
+          <button onClick={handleLogin} className="w-full bg-secondary text-primary py-2 rounded-md hover:bg-primaryHover">
             Iniciar Sesión
           </button>
           <p className="mt-4 text-sm">¿Olvidaste tu contraseña o aún no la has creado?</p>

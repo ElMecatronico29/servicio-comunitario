@@ -25,7 +25,7 @@ const columnData = [
 
 export default function News(){
   return (
-    <section className="py-12 bg-blue-900 bg-opacity-80  shadow-md">
+    <section className="py-12 bg-primary bg-opacity-80  shadow-md">
       <div className="container mx-auto px-8">
        
         <h2 className="text-3xl font-bold mb-8 ml-6">Ultimas Noticias</h2>
