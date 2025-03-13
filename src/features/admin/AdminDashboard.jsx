@@ -1,11 +1,33 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { logout } from "../../redux/authSlice";
+import { uploadUsersFile } from "../../api/apiClient";
 import { approveProject, rejectProject } from "../../redux/adminSlice";
 
 const AdminDashboard = () => {
+  const [file, setFile] = useState(null);
+  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const projects = useSelector((state) => state.student.projects); // 🔥 Obtenemos los proyectos enviados por los estudiantes
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+  const handleUpload = async () => {
+    if (!file) {
+      setMessage("❌ Debes seleccionar un archivo .txt");
+      return;
+    }
+
+    try {
+      const response = await uploadUsersFile(file);
+      setMessage(`✅ Archivo subido exitosamente: ${response.data.message}`);
+      setFile(null);
+    } catch (error) {
+      setMessage("❌ Error al subir el archivo. Inténtalo de nuevo.");
+    }
+  };
+
 
   const handleApprove = (index) => {
     dispatch(approveProject(projects[index]));
@@ -29,6 +51,21 @@ const AdminDashboard = () => {
         🔴 Cerrar Sesión
       </button>
       <h1 className="text-3xl font-bold">🔧 Panel de Administrador</h1>
+      
+      <p>Aquí puedes cargar la lista de usuarios desde un archivo .txt</p>
+
+      <div className="mt-6 bg-white p-6 shadow-md rounded-md">
+        <input type="file" accept=".txt" onChange={handleFileChange} className="mb-4" />
+        <button
+          onClick={handleUpload}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+        >
+          📤 Subir Archivo
+        </button>
+      </div>
+
+      {message && <p className="mt-4 text-lg font-semibold">{message}</p>}
+      
       <p>Aquí puedes gestionar los proyectos subidos por los estudiantes.</p>
 
       <h2 className="text-2xl font-bold mt-6">📌 Proyectos Pendientes</h2>
