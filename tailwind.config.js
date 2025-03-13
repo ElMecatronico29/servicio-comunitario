@@ -1,8 +1,17 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('tailwindcss/colors')
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: 
+      {
+        primary:'#194973',
+        secondary:'#F2F2F2',
+        primaryHover: colors.slate[200]
+      }
+
+    },
   },
   plugins: [],
 };
